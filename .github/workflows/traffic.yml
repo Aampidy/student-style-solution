@@ -1,0 +1,65 @@
+name: 记录访问与克隆
+
+# GitHub 只保留最近 14 天的流量数据，这里每天抓一次并合并进仓库，
+# 形成按日期累计的历史记录。
+
+on:
+  schedule:
+    - cron: "7 0 * * *" # 每天 00:07 UTC，即北京时间 08:07
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: traffic
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 检查 TRAFFIC_TOKEN
+        id: token
+        env:
+          TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
+        run: |
+          if [ -n "$TOKEN" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::未配置 TRAFFIC_TOKEN，本次跳过。流量接口需要 Administration 读权限，GITHUB_TOKEN 不具备该权限。"
+          fi
+
+      - name: 拉取流量数据
+        if: steps.token.outputs.available == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
+        run: |
+          gh api "repos/${{ github.repository }}/traffic/views" > "${RUNNER_TEMP}/views.json"
+          gh api "repos/${{ github.repository }}/traffic/clones" > "${RUNNER_TEMP}/clones.json"
+
+      - name: 合并到 CSV
+        if: steps.token.outputs.available == 'true'
+        run: |
+          python3 .github/scripts/record_traffic.py \
+            --views "${RUNNER_TEMP}/views.json" \
+            --clones "${RUNNER_TEMP}/clones.json" \
+            --out .github/metrics
+
+      - name: 提交变更
+        if: steps.token.outputs.available == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/metrics
+          if git diff --cached --quiet; then
+            echo "没有新数据"
+            exit 0
+          fi
+          git commit -m "chore: 记录访问与克隆数据"
+          git push
