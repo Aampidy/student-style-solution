@@ -2,6 +2,11 @@
 
 将 AI 生成的讲解式解答转换为可直接誊写的演算稿，适用于 Claude Code 等 agent。
 
+[![Clones](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Aampidy/student-style-solution/main/traffic/badge-clones.json)](traffic/clones.json)
+[![Views](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Aampidy/student-style-solution/main/traffic/badge-views.json)](traffic/views.json)
+
+![仓库流量](traffic/chart.png)
+
 > 本技能为个人自用，尚未完善，规则会随使用情况继续调整。
 
 ## 背景
