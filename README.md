@@ -5,8 +5,6 @@
 [![Clones](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Aampidy/student-style-solution/main/traffic/badge-clones.json)](traffic/clones.json)
 [![Views](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Aampidy/student-style-solution/main/traffic/badge-views.json)](traffic/views.json)
 
-![仓库流量](traffic/chart.png)
-
 > 本技能为个人自用，尚未完善，规则会随使用情况继续调整。
 
 ## 背景
@@ -98,3 +96,7 @@ E_k = E − E_p = 1.08×10⁻³π² J
 「学生体」指按学生答卷的习惯写：只写公式、代入与判断，不写讲解。这种写法并不省略思考，只是把两件事分开：理解发生在动笔之前，交付是一次干净的誊写。
 
 讲义留给课堂，演算稿留给答题纸。
+
+## 仓库流量
+
+![仓库流量](traffic/chart.png)
